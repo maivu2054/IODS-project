@@ -2,3 +2,7 @@
 # About the project
 
 *Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you can use R Markdown syntax.*
+#Title: Introduction to open Data Science 2019 
+##RStudio Exercise 1: Tasks and Instructions
+Snowing outside
+[My repository link](https://maivu2054.github.io/IODS-project/)
