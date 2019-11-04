@@ -6,8 +6,8 @@
 
 ##RStudio Exercise 1: **Tasks and Instructions**
 
-I join this course to discover world of data science.
+I join this course to discover the world of data science. Beside, I would like to know 
 
-https://github.com/maivu2054/IODS-project
+[My repository link](https://github.com/maivu2054/IODS-project)
 
-[My repository link](https://maivu2054.github.io/IODS-project/)
+[My  course diary](https://maivu2054.github.io/IODS-project/)
