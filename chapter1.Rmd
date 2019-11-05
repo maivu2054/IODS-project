@@ -6,7 +6,8 @@
 
 ##RStudio Exercise 1: **Tasks and Instructions**
 
-I join this course to discover the world of data science. Beside, I would like to know 
+I join this course to discover the world of data science. Beside, I would like to make friend with people who work in the health science area. 
+I am currently a PhD student of the *University of Eastern Finland*. 
 
 [My repository link](https://github.com/maivu2054/IODS-project)
 
