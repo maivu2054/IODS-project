@@ -1,6 +1,6 @@
 #Mai Vu 10 Nov 19 
 #install some packages:
-installed.packages(c("dplyr", "openxlsx","readxl", "ggplot2"))
+installed.packages(c("dplyr", "xlsx", "ggplot2"))
 #data description
 # read data
 # read the data into memory, separator is a tab ("\t") including header 
@@ -47,32 +47,17 @@ setwd("~/IODS-project")
 
 # Save created data to folder 'data' as an Excel worksheet
 # install.packages("openxlsx")
-library(openxlsx)
-write.xlsx(learning2014,file="~/IODS-project/data/learning2014.xlsx")
+library("xlsx")
+write.xlsx(learning2014,file="learning2014.xlsx", header=T)
+read.xlsx ("learning2014.xlsx")
+
 #plot
 library(ggplot2)
-
-
-
-#
-#
-#install.
-#plot 
-
-hist (lrn4$Points)
-plot (Attitute anad Assenne)
-#creat column by scaling 
-#cread deep
-#exclude observation
-#select var, mutate ()
-setwd ("~/ IOS")...
-library (openxlsx)
-library (readxl)
-#read data
-#change var.
-str(learning2014, chuyen var sang factor)
-head ()
-
+p1 <- ggplot(learning2014, aes(x = attitude, y = points))
+p2 <- p1 + geom_point()
+p3 <- p2 + geom_smooth(method = "lm")
+p4 <- p3 + ggtitle ("Correlation between attitude and points")
+print (p4)
 
 
 

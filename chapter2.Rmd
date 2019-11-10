@@ -1,6 +1,19 @@
 # Insert chapter 2 title here
+#Regression and model validation - exercise 2
 
 *Describe the work you have done this week and summarize your learning.*
+Data wrangling step
+Prepare data from original file 
+R script is here:
+
+Read dat
+setwd
+library
+learning 
+cor (learning$attitude, l$point)
+$$
+Y-i = \alpha + \beta-i x i + \epsilon-i 
+$$
 
 - Describe your work and results clearly. 
 - Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
