@@ -1,6 +1,6 @@
 #Mai Vu 10 Nov 19 
 #install some packages:
-installed.packages(c("dplyr", "xlsx", "ggplot2"))
+installed.packages(c("dplyr", "xlsx", "ggplot2", "GGally"))
 #data description
 # read data
 # read the data into memory, separator is a tab ("\t") including header 
@@ -50,7 +50,7 @@ setwd("~/IODS-project")
 library("xlsx")
 write.xlsx(learning2014,file="learning2014.xlsx", header=T)
 read.xlsx ("learning2014.xlsx")
-
+View (learning2014)
 #plot
 library(ggplot2)
 p1 <- ggplot(learning2014, aes(x = attitude, y = points))
@@ -58,9 +58,9 @@ p2 <- p1 + geom_point()
 p3 <- p2 + geom_smooth(method = "lm")
 p4 <- p3 + ggtitle ("Correlation between attitude and points")
 print (p4)
-
-
-
+pairs(learning2014[-1])
+library(GGally)
+p <- ggpairs(learning2014, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
 
 
 
