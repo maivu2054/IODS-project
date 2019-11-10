@@ -4,13 +4,19 @@
 *Describe the work you have done this week and summarize your learning.*
 Data wrangling step
 Prepare data from original file 
-R script is here:
+R script is here: https://github.com/rsund/IODS-project/blob/master/data/create_learning2014.R
+##Reading data:
+```{r readdata,echo=TRUE,results='hide',message=FALSE,warning=FALSE}
+setwd("https://github.com/maivu2054/IODS-project/tree/master/data")
+library(dplyr)
+library (xlsx)
+learning2014 <- read.xlsx("https://github.com/maivu2054/IODS-project/tree/master/data/learning2014.xlsx") %>%
+  mutate_at(vars(gender), factor)
+```
 
-Read dat
-setwd
-library
-learning 
-cor (learning$attitude, l$point)
+```{r }
+```
+
 $$
 Y-i = \alpha + \beta-i x i + \epsilon-i 
 $$
