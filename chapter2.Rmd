@@ -5,17 +5,15 @@
 Data wrangling step
 Prepare data from original file 
 R script is here: https://github.com/rsund/IODS-project/blob/master/data/create_learning2014.R
-##Reading data:
-```{r readdata,echo=TRUE,results='hide',message=FALSE,warning=FALSE}
 install.packages("dplyr")
 install.packages("GGally")
 install.packages("tidyverse")
+##Reading data:
+```{r readdata,echo=TRUE,results='hide',message=FALSE,warning=FALSE}
 library(dplyr)
 library (ggplot2)
 library(readxl)
 getwd()
-setwd("C:/Users/maivu/OneDrive - University of Eastern Finland/Attachments/8 statistics/2 R program/r practice/IODS-project")
-learning2014 <- read.table ("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt", sep = "\t", header = T)
 learning2014 <- read_excel("data/learning2014.xlsx")
  View (learning2014)
  dim (learning2014)
@@ -61,13 +59,13 @@ ggpairs(learning2014,
 
 The highest correlation is between *attitude* and *points*
 
-```{r test for association between *attitude* and 'points*}
+```{r test for association between *attitude* and *points*}
 cor.test(learning2014$attitude,learning2014$points)
 ```
 results of correlation in the cor.test between *attitude* and *points* = **0.4365245 **
 It means: *attitude* = 0 -> *points* 
 Plot the correlation between *attitude* and *points* .
-```{r plot}
+```{r plot association between attitude and points}
 p1 <- ggplot(learning2014, aes(x = attitude, y = points))
 p2 <- p1 + geom_point()
 p3 <- p2 + geom_smooth(method = "lm")
@@ -98,8 +96,3 @@ knitr::kable(results$coefficients, digits=3, caption="Regression coefficients")
 Intercept as well as attitude are statistically significant predictors. 
 Coefficient of determination $R^2$ = `r results$r.squared` that is not particularly high.
 Probably some more predictors could be added to the model.
-
-### Diagnostic plots
-```{r fig3, fig.path="figures/"}
-plot(my_model, which=c(1,2,5))
-```
