@@ -52,10 +52,11 @@ setwd(getwd())
 # Save created data to folder 'data' as an Excel worksheet
 # install.packages("openxlsx")
 library("xlsx")
-write.xlsx(learning2014, flie= "learning2018.csv", header=T)
 write.xlsx(learning2014,file="learning2014.xlsx", header=T)
 read.xlsx ("learning2014.xlsx")
 View (learning2014)
+# Or reading data from website
+learning2014 <- read.table ("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt", sep=",", header=TRUE)
 #plot
 library(ggplot2)
 p1 <- ggplot(learning2014, aes(x = attitude, y = points))
@@ -63,17 +64,11 @@ p2 <- p1 + geom_point()
 p3 <- p2 + geom_smooth(method = "lm")
 p4 <- p3 + ggtitle ("Correlation between attitude and points")
 print (p4)
-pairs(learning2014[-1])
+pairs.panels (learning2014)
 library(GGally)
 p <- ggpairs(learning2014, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
 
-
-$$
-  Y-i = \alpha + \beta-i x i + \epsilon-i 
-$$
-
-  learning2014 <- read.table ("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt", sep = "\t", header = T)
-setwd("C:/Users/maivu/OneDrive - University of Eastern Finland/Attachments/8 statistics/2 R program/r practice/IODS-project")
-
-
-learning2014 <- read_excel("data/learning2014.xlsx")
+p1 <- ggpairs(learning2014, 
+        mapping = aes(col = gender, alpha = 0.3), 
+        lower = list(combo = wrap("facethist", bins = 20))
+)

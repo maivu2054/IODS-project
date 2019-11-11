@@ -51,7 +51,11 @@ library(psych)
 #see the correlation between variables
 pairs.panels (learning2014)
 ```
+
+
+
 ### Commenting on the distributions of the variables and the relationships between them
+
 Each individual plot shows the relationship between the variable in the horizontal vs the vertical of the grid
  *gender* is the discrete variable so we just forcus on continous variables like: *age*, *attitude*, *deep*, *stra*, *surf*, *points*
 
