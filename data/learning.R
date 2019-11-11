@@ -63,5 +63,7 @@ library(GGally)
 p <- ggpairs(learning2014, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
 
 
-
+$$
+  Y-i = \alpha + \beta-i x i + \epsilon-i 
+$$
 
