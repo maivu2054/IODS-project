@@ -1,6 +1,10 @@
 #Mai Vu 10 Nov 19 
 #install some packages:
-installed.packages(c("dplyr", "xlsx", "ggplot2", "GGally"))
+install.packages(c("dplyr", "xlsx", "ggplot2", "GGally"))
+library (dplyr)
+library (xlsx)
+library(ggplot2)
+library(GGally)
 #data description
 # read data
 # read the data into memory, separator is a tab ("\t") including header 
@@ -43,11 +47,12 @@ learning2014 <- filter (learning2014, points>0)
 dim(learning2014)
 
 # Change working directory to IODS-folder
-setwd("~/IODS-project")
-
+#setwd("~/IODS-project")
+setwd(getwd())
 # Save created data to folder 'data' as an Excel worksheet
 # install.packages("openxlsx")
 library("xlsx")
+write.xlsx(learning2014, flie= "learning2018.csv", header=T)
 write.xlsx(learning2014,file="learning2014.xlsx", header=T)
 read.xlsx ("learning2014.xlsx")
 View (learning2014)
@@ -67,3 +72,8 @@ $$
   Y-i = \alpha + \beta-i x i + \epsilon-i 
 $$
 
+  learning2014 <- read.table ("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt", sep = "\t", header = T)
+setwd("C:/Users/maivu/OneDrive - University of Eastern Finland/Attachments/8 statistics/2 R program/r practice/IODS-project")
+
+
+learning2014 <- read_excel("data/learning2014.xlsx")
