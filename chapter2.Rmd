@@ -125,7 +125,7 @@ knitr::kable(results$coefficients, digits=3, caption="Regression coefficients")
 Intercept as well as attitude are statistically significant predictors. 
 Coefficient of determination $R^2$ = `r results$r.squared` that is not particularly high.
 
-### Diagnostic plots
+##Question 5: Diagnostic plots
 ```{r fig3, fig.path="figures/"}
 plot(m1, which=c(1,2,5))
 ```
