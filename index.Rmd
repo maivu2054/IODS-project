@@ -22,4 +22,9 @@ html_document:
 ```
 
 ***
+```{r child = "chapter3.Rmd"}
+```
+
+
+***
 

@@ -1,10 +1,6 @@
 #Mai Vu 10 Nov 19 
 #install some packages:
-install.packages(c("dplyr", "xlsx", "ggplot2", "GGally"))
-library (dplyr)
-library (xlsx)
-library(ggplot2)
-library(GGally)
+installed.packages(c("dplyr", "xlsx", "ggplot2", "GGally"))
 #data description
 # read data
 # read the data into memory, separator is a tab ("\t") including header 
@@ -47,16 +43,14 @@ learning2014 <- filter (learning2014, points>0)
 dim(learning2014)
 
 # Change working directory to IODS-folder
-#setwd("~/IODS-project")
-setwd(getwd())
+setwd("~/IODS-project")
+
 # Save created data to folder 'data' as an Excel worksheet
 # install.packages("openxlsx")
 library("xlsx")
 write.xlsx(learning2014,file="learning2014.xlsx", header=T)
 read.xlsx ("learning2014.xlsx")
 View (learning2014)
-# Or reading data from website
-learning2014 <- read.table ("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt", sep=",", header=TRUE)
 #plot
 library(ggplot2)
 p1 <- ggplot(learning2014, aes(x = attitude, y = points))
@@ -64,11 +58,12 @@ p2 <- p1 + geom_point()
 p3 <- p2 + geom_smooth(method = "lm")
 p4 <- p3 + ggtitle ("Correlation between attitude and points")
 print (p4)
-pairs.panels (learning2014)
+pairs(learning2014[-1])
 library(GGally)
 p <- ggpairs(learning2014, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
 
-p1 <- ggpairs(learning2014, 
-        mapping = aes(col = gender, alpha = 0.3), 
-        lower = list(combo = wrap("facethist", bins = 20))
-)
+
+$$
+  Y-i = \alpha + \beta-i x i + \epsilon-i 
+$$
+

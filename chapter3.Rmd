@@ -1,0 +1,117 @@
+---
+title: "Chapter3"
+author: "Mai Vu"
+date: "11/13/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+dat <- read.table ("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/alc.txt", sep = ",", header = T)
+View (dat)
+head (dat)
+dim (dat)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Describing data
+
+This data approach student achievement in secondary education of two Portuguese schools. The data attributes include student grades, demographic, social and school related features) and it was collected by using school reports and questionnaires.The datasets provides information regarding the performance in two distinct subjects: Mathematics (mat) and Portuguese language (por). In [Cortez and Silva, 2008], the two datasets were modeled under binary/five-level classification and regression tasks. 
+
+*Important note*: the target attribute G3 has a strong correlation with attributes G2 and G1. This occurs because G3 is the final year grade (issued at the 3rd period), while G1 and G2 correspond to the 1st and 2nd period grades. It is more difficult to predict G3 without G2 and G1, but such prediction is much more useful (see paper source for more details). The data (n=382) has 35 different variables and is a joined data of the two datasets. 
+
+The names of the variables including 
+
+*school*: binary variables: 'GP' - Gabriel Pereira or 'MS' - Mousinho da Silveira
+
+characteristics of participants: *sex*, *age*
+
+Demographic and family information including variables: *Address*, *famsize*, *Pstatus*, *Medu*, *Fedu*, 
+
+*G1*, *G2*, *G3*: express grades are related with the course subject, Math or Portuguese.
+
+*absences*: numeric variale- number of school absences (numeric: from 0 to 93)
+
+*failures*: - number of past class failures (numeric: n if 1<=n<3, else 4)
+
+*nursery*: - attended nursery school (binary: yes or no)
+
+*internet*: - Internet access at home (binary: yes or no)
+
+*guardian*: - student's guardian (nominal: 'mother', 'father' or 'other')
+
+
+# Q3: choose 4 interesting variables in the data 
+
+I want to see how age (*age*). sex (*sex*), with a romantic relationship (* romantic *), and number of school absences (*absences *) variables effect to cohort consumption. 
+
+The hyopthesis is that getting older, being male, not good relationship with partner and number of school absence will increase datohol consumption.
+
+# Q4: Numerically and graphically explore the distributions of chosen variables
+
+```{r }
+g1 <- ggplot(data = dat, aes(x = high_use, fill = sex))
+g1 + geom_bar() 
+```
+From the polt 1, male took higher prevlance than female.
+
+
+```{r }
+g2 <- ggplot(data = dat, aes(x = high_use, fill =  romantic ))
+g2 + geom_bar()
+```
+
+It can be seen here somehow not in a romantic relationship took more proportion of datohol consumption compare to in a romantic relationship
+
+
+```{r plot,echo=FALSE }
+g3 <- ggplot(data = dat, aes(x = high_use, y= absences))
+g3 + geom_boxplot()
+```
+
+more day absences from school increased datohol consumption
+
+#Q5: Logistic regression
+
+```{r}
+m <- glm(high_use ~ age+ sex + romantic+ absences, data = dat, family = "binomial")
+summary(m)
+OR <- coef(m) %>% exp
+CI <- confint(m) %>% exp
+
+cbind (OR, CI)
+```
+
+Interpret result:
+Outcome here: high datohol assumption
+
+Age: getting older has associate to increase datohol usage, however, the effect of age variable is not significant (P-value =  0.10 )
+Being a male increase probability use more datohol than 2.69 being female (OR = 2.69)
+In a romantic relationship decrease use of datohol, however, the effect of this variable is not significant (P-value = 0.26)
+The number of day absences from school increase the probability of use more datohol 1.07 (95%CI = 1.04 - 1.11)
+
+
+#Q6: Prection analysis
+```{r}
+probabilities <- predict(m, type = "response")
+
+dat <- mutate(dat, probability = probabilities)
+
+dat <- mutate(dat, prediction = probabilities > 0.5)
+
+g <- ggplot(dat, aes(x = probability, y = high_use, col = prediction))
+
+g + geom_point()
+```
+
+
+
+
+
+
+
+
+ 
+
