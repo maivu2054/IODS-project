@@ -2,50 +2,69 @@
 #Regression and model validation - exercise 2
 
 *Describe the work you have done this week and summarize your learning.*
-Data wrangling step
+##Data wrangling step
 Prepare data from original file 
-R script is here: https://github.com/rsund/IODS-project/blob/master/data/create_learning2014.R
-install.packages("dplyr")
-install.packages("GGally")
-install.packages("tidyverse")
-##Reading data:
+*R script is [here](https://github.com/maivu2054/IODS-project/blob/master/data/learning.R)
+*Data is [here](https://github.com/maivu2054/IODS-project/blob/master/data/learning2014.xlsx)
+
+##Install some packages:
+*First install.packages(c("dplyr","GGally","tidyverse","xlsx","ggplot2"))
+
+## Question 1: Reading data
 ```{r readdata,echo=TRUE,results='hide',message=FALSE,warning=FALSE}
 library(dplyr)
 library (ggplot2)
 library(readxl)
-getwd()
-learning2014 <- read_excel("data/learning2014.xlsx")
+setwd(getwd())
+library(dplyr)
+learning2014 <- readxl::read_excel("data/learning2014.xlsx") %>%
+  mutate_at(vars(gender), factor)
  View (learning2014)
  dim (learning2014)
  head (learning2014)
  str(learning2014)
 ```
-Describle dataset: data includes seven variables: gender,age, attitude, deep, stra, surf, points.
+
+##Question 2: Describle dataset and graphical overview of the data, summarize of variables in the data
+Data includes seven variables: gender,age, attitude, deep, stra, surf, points.
 In which
-gender: M (Male), F (Female)
-age:Age (in years) derived from the date of birth
-attitude: Global attitude toward statistics
-deep: average of score related to deep learning
-stra: average of score related to deep learning
-surf: average of score related to surface questions
-points: Exam points
+*gender*: M (Male), F (Female)
+*age*:Age (in years) derived from the date of birth
+*attitude*: Global attitude toward statistics
+*deep*: average of score related to deep learning
+*stra*: average of score related to 
+*surf*: average of score related to surface questions
+*points*: Exam points
 full data from this :https://www.mv.helsinki.fi/home/kvehkala/JYTmooc/JYTOPKYS3-data.txt
 
-## Exploring data
-```{r plot}
+```{r }
+View (learning2014)
+#describe some variables
+as.numeric(learning2014$age)
+summaryvar <- learning2014 %>%summary (c("age", "deep", "stra", "surf", "points" ))
+print (summaryvar)
 library(dplyr)
 library (GGally)
 library(ggplot2)
 library(tidyverse)
 library(psych)
+#see the correlation between variables
 pairs.panels (learning2014)
 ```
+
+
+
+### Commenting on the distributions of the variables and the relationships between them
+
 Each individual plot shows the relationship between the variable in the horizontal vs the vertical of the grid
- *gender* is the discrete variable so we just forcus on continous variables like: **age*, *attitude*, *deep*, *stra*, *surf*, *points*
+ *gender* is the discrete variable so we just forcus on continous variables like: *age*, *attitude*, *deep*, *stra*, *surf*, *points*
 
 For example: correlation between *age* and *attitude* = 0.02
+*attitude* toward statistics of people in the survey has positive correlation with age, deep learning, strategy, but negative correlation with surface learning
 
 The diagonal is showing a histogram of each variable and it can be seen on the graph that *point* and *attitude* has a strong correlation (*r* = **0.44**)
+
+##Question 3
 
 ```{r fig2, fig.path="figures/", fig.dim=c(10,10), results='hide', message=FALSE}
 library(GGally)
@@ -57,24 +76,38 @@ ggpairs(learning2014,
         )
 ```
 
-The highest correlation is between *attitude* and *points*
+###Choose three variables as explanatory variables and fit a regression model where exam points is the target (dependent) variable. 
 
-```{r test for association between *attitude* and *points*}
+Test association between *points* and *attitude*, *deep*, *stra* 
+
+
+```{r }
 cor.test(learning2014$attitude,learning2014$points)
+cor.test(learning2014$deep,learning2014$points)
+cor.test(learning2014$stra,learning2014$points)
 ```
-results of correlation in the cor.test between *attitude* and *points* = **0.4365245 **
-It means: *attitude* = 0 -> *points* 
-Plot the correlation between *attitude* and *points* .
+Results of correlation in the cor.test between *attitude* and *points* = **0.4365245 ** (*p_value*= 4.119e-09)
+
+Results of correlation in the cor.test between *deep* and *points* = **-0.01014849  **(*p_value*= 0.8967)
+
+Results of correlation in the cor.test between *stra* and *points* = **0.1461225  **(*p_value*= 0.06031)
+
+Look at the p_value: association between *points* and *deep* and *stra* is not statistically significant relationship so remove *deep* and *stra* variables from model
+
+##Question 4: relation ship between *attitude* and *points*
+
+
+
 ```{r plot association between attitude and points}
 p1 <- ggplot(learning2014, aes(x = attitude, y = points))
 p2 <- p1 + geom_point()
 p3 <- p2 + geom_smooth(method = "lm")
-p4 <- p3 + ggtitle("relation between attitude and points")
+p4 <- p3 + ggtitle( "Relation between attitude and points")
 print (p4)
 ```
 
-
-Let's fit a linear model to the data. Points are explained by attitude.
+## A linear model to the data. Points are explained by attitude.
+ 
 The equation for the model is
 $$
 Y_i = \alpha + \beta_1 X_i + \epsilon_i
@@ -82,17 +115,19 @@ $$
 where Y represent points, X is attitude, $\alpha$ is constant, $\beta_1$ is regression
 coefficient for attitude, and $\epsilon$ is a random term.
 
-
-## Linear regression
-
-
-Estimation of the model yields the following results:
 ```{r, results='asis'}
 m1 <- lm(learning2014$points ~learning2014$attitude, data = learning2014)
 results <- summary(m1)
 knitr::kable(results$coefficients, digits=3, caption="Regression coefficients")
 ```
 
+
 Intercept as well as attitude are statistically significant predictors. 
 Coefficient of determination $R^2$ = `r results$r.squared` that is not particularly high.
-Probably some more predictors could be added to the model.
+
+##Question 5: Diagnostic plots.
+```{r fig3, fig.path="figures/"}
+plot(m1, which=c(1,2,5))
+```
+
+
