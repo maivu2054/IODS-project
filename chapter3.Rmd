@@ -109,7 +109,7 @@ table(high_use = dat$high_use, prediction = dat$prediction)
 
 ```
 
-So the model 
+So the model so 
 
 ```{r}
 loss_func <- function(class, prob) {
