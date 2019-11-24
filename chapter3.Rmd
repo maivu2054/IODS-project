@@ -5,6 +5,7 @@ date: "11/13/2019"
 output: html_document
 ---
 
+
 # Chapter 3
 
 # Q2 Read data and print out the names of the variables in the data 
