@@ -14,7 +14,6 @@ library (plotly)
 data("Boston")
 
 #look at data Boston
-View(Boston)
 head (Boston)
 
 #look at the structure of dataset
@@ -58,22 +57,25 @@ Description: The Boston data frame has 506 rows and 14 columns with explaination
 
 ```{r , echo=FALSE}
 #Plot matrix
-pairs(Boston)
-
+fig1=pairs(Boston)
+print(fig1)
 #correlations plot
 cor_matrix <- cor (Boston)
-cor_matrix%>%round(digits=2)
-
+#summary the result 
+summary (cor_matrix%>%round(digits=2))
 # visualize the correlation matrix 
 corrplot(cor_matrix, method="square", type ="upper", cl.pos= "b", tl.pos="d", tl.cex=0.6)
+#see correlation matrix with number of correalation...
 corrplot.mixed (cor_matrix, lower.col = "black", number.cex = .7)
 ```
+In fig1 shows the distribution of variables and their relationship. For example:*chas* variables is the categorical variable
 
+## Question 4: Standardizing the data
 
 ```{r }
 #scale variables
 boston_scaled <- scale (Boston)
-summary (boston_scaled)
+summary (boston_scaled%>%round (digits = 2))
 #to see class of the scaled object
 class (boston_scaled)
 #change boston_scaled from matrix into data frame
@@ -98,21 +100,18 @@ ind <- sample(n,  size = n * 0.8)
 train <- boston_scaled[ind,]
 # create test set 
 test <- boston_scaled[-ind,]
-# save the correct classes from test data
-correct_classes <- test$crime
-# remove the crime variable from test data
-test <- dplyr::select(test, -crime)
+
 ```
 
-## 4) Standardizing the data
+All means of variables move to 0. Now the crime variable is set to 4 categories according to how high is the per capita crime rate by town.
 
-Now the crime variable is set to 4 categories according to how high is the per capita crime rate by town.
-
-## 5) Linear discriminant analysis
+## Question 5: Linear discriminant analysis
 
 ```{r}
+# linear discriminant analysis with target variable crime
 lda.fit <- lda(crime ~ ., data = train)
 lda.fit
+# the function for lda biplot arrows
 lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "red", tex = 0.75, choices = c(1,2)){
   heads <- coef(x)
   arrows(x0 = 0, y0 = 0, 
@@ -121,16 +120,27 @@ lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "red", tex = 0
   text(myscale * heads[,choices], labels = row.names(heads), 
        cex = tex, col=color, pos=3)
 }
+
 classes <- as.numeric(train$crime)
+# plot lda with 2 discriminants
 plot(lda.fit, dimen = 2, col = classes, pch = classes)
 lda.arrows(lda.fit, myscale = 1)
 ```
+The purpose of linear discriminant analysis (LDA) is to find the linear combinations of the original variables (in Boston dataset) that gives the best possible separation between the groups. 
 
+We separate the *crime* into 4 groups: "low", "med_low","med_high", "high".
+so the number of groups G=4, and the number of variables is 13 (p=13). The maximum number of useful discriminant functions that can separate is the minimum of G???1 and p.
+Thus, we can find in the result 3 useful discriminant functions (LD1, LD2, LD3) to separate.
 In the above picture we can see the linear combination of the variables that separate the crime classes. The LDA model os visualized as a biplot
 
-## 6) Predicting classes
+## 6) Predicting classes with the LDA model on the test data
 
 ```{r}
+# save the correct classes from test data
+correct_classes <- test$crime
+# remove the crime variable from test data
+test <- dplyr::select(test, -crime)
+# predict classes with test data
 lda.pred <- predict(lda.fit, newdata = test)
 table(correct = correct_classes, predicted = lda.pred$class)
 ```
