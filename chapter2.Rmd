@@ -19,7 +19,6 @@ setwd(getwd())
 library(dplyr)
 learning2014 <- readxl::read_excel("data/learning2014.xlsx") %>%
   mutate_at(vars(gender), factor)
- View (learning2014)
  dim (learning2014)
  head (learning2014)
  str(learning2014)
