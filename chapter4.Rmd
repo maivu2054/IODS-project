@@ -170,8 +170,6 @@ summary (dist_man)
 km <-kmeans(Boston, centers = 4)
 # plot the Boston dataset with clusters
 pairs(Boston, col = km$cluster )
-#plot focus on 
-pairs(Boston[6:10], col = km$cluster)
 #K-means: determine the k
 set.seed(123)
 k_max <- 10
@@ -183,6 +181,7 @@ qplot(x = 1:k_max, y = twcss, geom = 'line')
 
 ```{r} 
 km <-kmeans(Boston, centers = 2)
+#plot focus on some variables
 pairs(Boston , col = km$cluster)
 pairs(Boston[1:5] , col = km$cluster)
 pairs(Boston[6:10] , col = km$cluster)
@@ -190,7 +189,7 @@ pairs(Boston[11:14] , col = km$cluster)
 ```
 
 
-
+### Super-Bonus:
 
 ```{r} 
 model_predictors <- dplyr::select(train, -crime)
@@ -202,6 +201,7 @@ matrix_product <- as.matrix(model_predictors) %*% lda_crime$scaling
 matrix_product <- as.data.frame(matrix_product)
 plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, type= 'scatter3d', mode='markers')
 ```
+
 
 
 
