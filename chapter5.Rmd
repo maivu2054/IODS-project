@@ -89,41 +89,52 @@ In the standardized model the first components (PC1) explain 53.6 % of the varia
 and the second dimension (PC2) explaints 16.2 % of the variance. 
 PC3 has 9.5 % of the variance and so on 
 
-## Question 5:Tea dataset analysis
+## Question 5: Tea dataset analysis
 install packages  Factominer first
+
 install.packages("FactoMineR")
 ```{r}
+library(FactoMineR)
 library (ggplot2)
 library (tidyr)
-library (stringr)
 library (dplyr)
 library (corrplot)
 library(GGally)
 library(stringr)
 library (psych)
-library(FactoMineR)
+
+#calling data tea
 data(tea)
 #structure of data tea
 str(tea)
-#dimentions ofdata
-
-# visualize
-
+#dimentions of data
+dim (tea)
+# tea includes 300 observation with 36 variables
+# visualize 10 first variables
+fig5 <- pairs(tea[,1:10])
+# fig5 shows that correlation between first 10 variables are not linear.. 
+# column names to keep in the dataset
 keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+# select the 'keep_columns' to create a new dataset
 tea_time <- dplyr::select(tea, one_of(keep_columns))
 summary(tea_time)
 str(tea_time)
+head (tea_time)
 gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
 ```
 
-After the restructuration the data has 300 observations with the selected 6 variables. On the visualisation we can see how the participants drink their tee. For example we can see that most of them do not drink tee at lunch. Earl Grey is the most common label and these participants like to drink their tee plain withoutlemon, or milk. Only thing almost half of the participants like to add is sugar.
 
-### MCA on tea data
+
+### Multiple Correspondence Analysis on the tea data
 
 ```{r}
 mca <- MCA(tea_time, graph = FALSE)
 summary(mca)
-plot(mca, invisible=c("ind"), habillage = "quali")
-```
-From the MCA visualisation we can see how the participants are put into different dimensions. For example participants who take their tea fro tea shops like to drink their tea unpackaged and like to drink geen tea. Aslo we can see that milk is more ofen with Earl grey than black or green tea.
+par(mfrow=c(1,2))
+plot(mca, invisible=c("ind"), title  = "before")
+plot(mca, invisible=c("ind"), habillage = "quali", title  = "after")
 
+```
+The plot above shows a global pattern within the data. Rows (individuals) are represented by blue points and columns (variable categories) by red triangles.
+
+The distance between any row points or column points gives a measure of their similarity (or dissimilarity). Row points with similar profile are closed on the factor map. The same holds true for column points.
