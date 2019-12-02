@@ -53,8 +53,9 @@ glimpse(human)
 head (human)
 
 write.table(human, file= "human.csv")
+##################
 
-# Date 1 Dec: Excercise 5
+# Date 1 Dec 2019: Excercise 5
 
 # Q1: change GNI to numeric and data description
 install.packages("stringr")
@@ -63,6 +64,7 @@ library(MASS)
 library(stringr)
 library (tidyr)
 library (dplyr)
+
 #structure of human and GNI
 str(human)
 str (human$GNI)
@@ -70,7 +72,6 @@ human$GNI <- str_replace(human$GNI, pattern=",", replace ="") %>% as.numeric()
 human$GNI%>%as.numeric(str_replace(human$GNI, pattern=",", replace =""))
 head(human[, 1:19], 4)
 
-#
 # Q2 
 "Excluding unneeded variables keep only the columns matching the following variable names: 
 Country, Edu2.FM, Labo.FM, Edu.Exp, Life.Exp, GNI, Mat.Mor, Ado.Birth, Parli.F"
