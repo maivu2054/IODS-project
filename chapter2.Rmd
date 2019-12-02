@@ -37,7 +37,7 @@ In which
 full data from this :https://www.mv.helsinki.fi/home/kvehkala/JYTmooc/JYTOPKYS3-data.txt
 
 ```{r }
-View (learning2014)
+head(learning2014)
 #describe some variables
 as.numeric(learning2014$age)
 summaryvar <- learning2014 %>%summary (c("age", "deep", "stra", "surf", "points" ))

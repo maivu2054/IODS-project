@@ -2,7 +2,7 @@
 title: "IODS course project"
 author: "Mai Vu"
 output:
-html_document:
+  html_document:
     theme: yeti
     highlight: tango
     toc: true
@@ -13,28 +13,35 @@ html_document:
     fig_width: 6
     fig_height: 4
 ---
+[My IODS project github data repository][https://github.com/maivu2054/IODS-project] ???
 
 ***
   
 ```{r child = "chapter1.Rmd"}
 ```
-  
+<br/><br/><br/> 
+ 
 ***
   
 ```{r child = "chapter2.Rmd"}
 ```
+<br/><br/><br/>
 
 ***
 ```{r child = "chapter3.Rmd"}
 ```
+<br/><br/><br/>
 
 ***
 ```{r child = "chapter4.Rmd"}
 ```
+<br/><br/><br/>
 
 ***
 ```{r child = "chapter5.Rmd"}
 ```
+<br/><br/><br/>
 ***
 
-  
+[repository]: https://github.com/maivu2054/IODS-project
+[onw]: 

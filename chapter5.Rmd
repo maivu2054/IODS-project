@@ -3,13 +3,6 @@ title: "chapter5"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-
-
 ```{r}
 library (ggplot2)
 library (tidyr)
@@ -17,8 +10,10 @@ library (stringr)
 library (dplyr)
 library (corrplot)
 library(GGally)
+library(stringr)
+library (psych)
 ```
-
+## Q1) Graphical overview and summary variables in the data
 ```{r}
 #read data
 human <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human2.txt", sep = ",", header = T)
@@ -27,11 +22,108 @@ head (human)
 names (human)
 str (human)
 summary (human)
+human$GNI <- str_replace(human$GNI, pattern=",", replace ="") %>% as.numeric()
+str(human$GNI)
+#plot to see correlation between variables in data
+fig1 <- pairs(human, pch = 21,bg = c ("red", "green3", "blue", "purple", "violet", "yellow", "orange","grey"))
+fig2 <-cor(human) %>% corrplot.mixed()
 ```
+* variables explanation:
+The dataset has 155 observation and 8 variables
+*Edu2.FM*: education ratio
+
+*Labo.Fm*: participation ratio
+
+*Edu.Exp*: mean of yeas of education
+
+*Life.Exp*: measures life expectancy at birth
+
+*GNI*: Gross national income per capital
+
+*Mat.Mor*: maternity mortality
+
+*Ado.Birth*: Adolescent of birth rate
+
+*Parli.F*: Percetange of female representatives in parliament
+
+* From the fig1 and fig2, we can see the correlations between the variables.
+
++ There seems to be strong positive correlations between: *Edu.Exp* and *Life.Exp*, *Mat.Mor* and *Ado.Birth*...
+
++ A negative correlation: between *Mat.Mor* and *Life.Exp*...
+
+
+## Q2) Perform principal component analysis (PCA) on the not standardized human data
 
 ```{r}
-str(human$GNI)
-human$GNI%>%as.numeric(str_replace(human$GNI, pattern=",", replace =""))
+pca_human.notstand <- prcomp(human)
+summary1<- summary (pca_human.notstand)
+print (summary1)
+# rounded percetanges of variance captured by each PC
+pca_pr <- round(100*summary1$importance[2, ], digits = 1)
+# create object pc_lab to be used as axis labels
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+biplot(pca_human.notstand, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2])
+```
+From the unstandardized PCA, we can see that the PCs cannot be separated. 
+
+## Q3) Perform principal component analysis (PCA) on the standardized human data 
+
+```{r}
+human_std <- scale(human)
+pca_human_std <- prcomp(human_std)
+summary2<- summary(pca_human_std)
+print (summary2)
+pca_pr <- round(100*summary2$importance[2, ], digits = 1)
+pca_pr
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+biplot(pca_human_std, cex = c(0.8, 1), col = c("orange", "green4"), xlab = pc_lab[1], ylab = pc_lab[2])
 ```
 
+
+
+
+## Q4 Give personal interpretations of the first two principal component dimensions based on the biplot drawn after PCA on the standardized human data.
+
+In the standardized model the first components (PC1) explain 53.6 % of the variance 
+and the second dimension (PC2) explaints 16.2 % of the variance. 
+PC3 has 9.5 % of the variance and so on 
+
+## 5 Tea dataset analysis
+install packages  Factominer first
+install.packages("FactoMineR")
+```{r}
+library (ggplot2)
+library (tidyr)
+library (stringr)
+library (dplyr)
+library (corrplot)
+library(GGally)
+library(stringr)
+library (psych)
+library(FactoMineR)
+data(tea)
+#structure of data tea
+str(tea)
+#dimentions ofdata
+
+# visualize
+
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+tea_time <- dplyr::select(tea, one_of(keep_columns))
+summary(tea_time)
+str(tea_time)
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+
+After the restructuration the data has 300 observations with the selected 6 variables. On the visualisation we can see how the participants drink their tee. For example we can see that most of them do not drink tee at lunch. Earl Grey is the most common label and these participants like to drink their tee plain withoutlemon, or milk. Only thing almost half of the participants like to add is sugar.
+
+### MCA on tea data
+
+```{r}
+mca <- MCA(tea_time, graph = FALSE)
+summary(mca)
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+From the MCA visualisation we can see how the participants are put into different dimensions. For example participants who take their tea fro tea shops like to drink their tea unpackaged and like to drink geen tea. Aslo we can see that milk is more ofen with Earl grey than black or green tea.
 
