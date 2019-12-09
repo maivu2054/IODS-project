@@ -3,6 +3,8 @@ title: "Chap6"
 output: html_document
 ---
 # Exercise 6 (the last one)
+
+Prepare some packages 
 ```{r }
 library (dplyr)
 library (tidyverse)
