@@ -2,6 +2,7 @@
 title: "Chap6"
 output: html_document
 ---
+* Exercise 6 (the last one)
 ```{r }
 library (dplyr)
 library (tidyverse)
@@ -65,17 +66,14 @@ fig2
 ```
 
 ```{r}
-# Number of time baseline (Time =1 ) 
+RATSL<- within(RATSL, {
+       Time <- factor(Time)
+    Group <- factor(Group)
+})
 n <- RATSL$week %>% unique() %>% length()
-# Make a summary data:
-RATSLS <- RATSL %>%
-  group_by(Group, Time) %>%
+RATSLS <- RATSL %>% group_by(Group, Time) %>%
   summarise( mean=mean(Weight), se=sd(Weight)/sqrt(n) ) %>%
   ungroup()
-```
-***See how data set change 
-
-```{r}
 glimpse(RATSLS)
 p1 <- ggplot(RATSLS, aes(x = factor(Time), y = mean, linetype = Group, shape = Group))
 p2 <- p1 + geom_line() + scale_linetype_manual(values = c(1,2,3))
@@ -83,7 +81,7 @@ p3 <- p2 + geom_point(size=3) + scale_shape_manual(values = c(1,2,3))
 p4 <- p3 + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, linetype="1"), width=0.3)
 p5 <- p4 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 p6 <- p5 + theme(legend.position = c(0.8,0.8))
-p7 <- p6 + scale_y_continuous(name = " mean of weights")
+p7 <- p6 + scale_y_continuous(name = "mean of weights")
 p7
 ```
 
@@ -120,12 +118,16 @@ p5 <- p4 + scale_y_continuous(name = "mean(Weight), Time ")
 p5
 ```
 
-** T-test 
-```{r}
-# Without the outlier, apply Student's t-test, two-sided:
-result <- aov(mean ~ Group, data=RATSL8S1 )
+** T-test: Without the outlier, apply Student's t-test, two-sided with code: result <- aov(mean ~ Group, data=RATSL8S1 ) ( I tried to put code in chunk but when knit, it does not allow)
 summary(result)
-```
+Result 
+Df Sum Sq Mean Sq F value   Pr(>F)    
+Group        2 189317   94659   611.4 5.32e-12 ***
+Residuals   11   1703     155                     
+---
+Signif. codes:  
+0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
 
 **Chapter 9 linear mixed effects models for normal response: using **BPRS** data
 
@@ -133,7 +135,7 @@ summary(result)
 BPRSL<- read.csv ("bprs.csv", row.names = 1)
 summary (BPRSL)
 pairs(BPRSL, cex=0.7)
-ggplot(BPRSL, aes(x = Time, y = bprs, group = subject)) +
+ggplot(BPRSL, aes(x = week, y = bprs, group = subject)) +
   geom_line()
 ```
 *** Data description:
