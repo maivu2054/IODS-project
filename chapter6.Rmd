@@ -2,7 +2,7 @@
 title: "Chap6"
 output: html_document
 ---
-* Exercise 6 (the last one)
+# Exercise 6 (the last one)
 ```{r }
 library (dplyr)
 library (tidyverse)
