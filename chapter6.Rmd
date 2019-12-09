@@ -1,0 +1,185 @@
+---
+title: "Chap6"
+output: html_document
+---
+```{r }
+library (dplyr)
+library (tidyverse)
+library (ggplot2)
+library (tidyr)
+library (corrplot)
+library (lme4)
+```
+Data sets were prepared in meet_and_repeat.R file
+
+**Chapter 8 in MABS: analysis of longitudinal data : Graphical displays and summary measure approach using **RATS** data
+
+```{r }
+RATSL<- read.csv ("rats.csv", row.names = 1)
+fig1=pairs(RATSL)
+ggplot(RATSL, aes(x = Time, y = Weight, group = ID)) +
+  geom_line()
+```
+
+*** Data description
+Data was extracted from a nutrition study conducted in three groups of rats (Crowder and Hand, 1990). 
+
+*ID*: number of rats in study
+
+*Group*: three groups in study (1,2,3)
+
+Variables (*weight*): body weight (grams)
+
+Time of study (*WD*): seven Times
+
+In more detail, we want to study the diffecences between the variable of interest, that is the weight of the individual rats, and the groups as well as the change of the weight in time.
+
+
+```{r}
+# Standardise the scores for RAT data set:
+RATSL <- RATSL %>%
+  group_by(Time) %>%
+  mutate( stdWeight = (Weight - mean(Weight))/sd(Weight) ) %>%
+  ungroup()
+glimpse(RATSL)
+# Plot again with the standardised bprs
+ggplot(RATSL, aes(x = Time, y = stdWeight, group = ID)) +
+  geom_line()
+
+```
+
+## Figure 8.3
+
+```{r}
+# Create the summary data BPRSS with the mean and standard error of the variable bprs
+# Number of WD, baseline (WD=1) included
+n <- RATSL$WD %>% unique() %>% length()
+
+# Summary data with mean and standard error of Weight by treatment and week
+RATSS <- RATSL %>%
+  group_by(Group, Time) %>%
+  summarise( mean = mean(Weight), se = (sd(Weight)/sqrt(n)) ) %>%
+  ungroup()
+
+```
+
+
+
+```{r}
+ggplot(RATSL, aes(x = factor(Time), y = Weight, fill = Group)) + geom_boxplot(position = position_dodge(width = 0.9))
+
+```
+
+
+
+```{r}
+# Make a summary data 
+RATSL8S <- RATSL %>%
+  filter(Time > 0) %>%
+  group_by(Group, ID) %>%
+  summarise( mean=mean(Weight) ) %>%
+  ungroup()
+glimpse(RATSL8S)
+p1 <- ggplot(RATSL8S, aes(x = Group, y = mean, group = ID))
+p2 <- p1 + geom_boxplot()
+p3 <- p2 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+p4 <- p3 + stat_summary(fun.y = "mean", geom = "point", shape=23, size=4, fill = "white")
+p5 <- p4 + scale_y_continuous(name = "meanof weight")
+p5
+```
+
+## Figure 8.6
+
+```{r}
+# Remove the outlier in group 2 (see from fig above)
+RATSL8S1 <- RATSL8S %>%
+  filter(mean >600 )
+glimpse(RATSL8S1)
+p1 <- ggplot(RATSL8S1, aes(x = Group, y = mean))
+p2 <- p1 + geom_boxplot()
+p3 <- p2 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+p4 <- p3 + stat_summary(fun.y = "mean", geom = "point", shape=23, size=4, fill = "white")
+p5 <- p4 + scale_y_continuous(name = "mean(bprs), Times 1-8")
+p5
+```
+
+
+## Table 8.3
+
+```{r}
+# Without the outlier, apply Student's t-test, two-sided:
+t.test(mean ~ treatment, data = RATSL8S1, var.equal = TRUE)
+```
+
+
+```{r}
+# Add the baseline from the original data as a new variable to the summary data:
+baseline <- BPRS$Time0
+RATSL8S2 <- RATSL8S %>%
+  mutate(baseline)
+# Fit the ANCOVA model and see the results:
+fit <- lm(mean ~ baseline + treatment, data = RATSL8S2)
+summary(fit)
+anova(fit)
+```
+
+
+**Chapter 9 linear mixed effects models for normal response: using **BPRS** data
+
+```{r }
+BPRSL<- read.csv ("bprs.csv", row.names = 1)
+summary (BPRSL)
+pairs(BPRSL, cex=0.7)
+ggplot(BPRSL, aes(x = Time, y = bprs, group = subject)) +
+  geom_line()
+```
+***Data description:
+Data containts:
+
+- Subjects (*subject*): 40 male were randomly assigned to one of two treatment groups 
+
+- Treatment (*treatment*): variable 1 or 2 
+
+- Brief psychiatric rating scale (*BPRS*): score of each subject, which was assessed by the level of 18 symptom constructs such as hostility, suspiciousness, hallucinations and grandiosity...
+
+- week (*week*) from 1 - 8 weeks
+
+
+1) Have a look on data variables
+```{r }
+BPRSL_reg <- lm(bprs ~ week + treatment, data = BPRSL)
+summary(BPRSL_reg)
+```
+Look at assocition between Psychiatric rating scale and week treatment and method of treatment, in which coefficients of *week* = - 2.27, and *treatment* = 0.57. The BPRS score seems to be decreasing in both treatment groups,  we are interested whether one treatment seems to be more efficient than the other one.
+
+Look at P-value of treatment  = 0.66, it seems methods of treatment does not effec to model
+
+**** The Random Intercept Model
+```{r }
+library (lme4)
+#Fit the random intercept model with the subject as the random effect
+BPRSL_ref <- lmer(bprs ~ week + treatment + (1 | subject), data = BPRSL, REML = FALSE)
+summary(BPRSL_ref)
+```
+
+****Slippery slopes: Random Intercept and Random Slope Model
+```{r }
+# create a random intercept and random slope model
+BPRSL_ref1 <- lmer(bprs ~ week + treatment + (week | subject), data = BPRSL, REML = FALSE)
+summary(BPRSL_ref1)
+```
+
+
+Time to interact: Random Intercept and Random Slope Model with interaction
+```{r }
+# perform an ANOVA test on the two models
+anova(BPRSL_ref, BPRSL_ref1)
+```
+
+Pay attention to the chi-squared statistics and p-value of the likelihood ratio test between BPRSL_ref and BPRSL_ref1. The lower the value the better the fit against the comparison model.
+
+```{r }
+# draw the plot of RATSL with the observed Weight values
+ggplot(BPRSL, aes(x = week , y = bprs , group = subject )) +
+  geom_line(aes(linetype = treatment)) 
+```

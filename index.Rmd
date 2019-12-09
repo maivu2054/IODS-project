@@ -43,5 +43,12 @@ output:
 <br/><br/><br/>
 ***
 
+```{r child = "chapter6.Rmd"}
+```
+<br/><br/><br/>
+***
+
+
+
 [repository]: https://github.com/maivu2054/IODS-project
 [onw]: 
